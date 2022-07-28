@@ -56,14 +56,14 @@
 
 | Parameter | User Input |
 | --- | --- |
-| Project_Name | User_Defined |
-| Expression_Matrix_file | ~/Path/To/Expression.txt |
-| Meta_Data_File | ~/Path/To/Meta.txt |
-| Gene_Set_File | ~/Path/To/GeneSetFile.[txt/tsv/gmt/RData] or ~/Path/To/GeneSetFiles.lst |
-| Output_File_Path | ~/Path/To/Output/Folder/ |
-| Survival_Time_Label | OS.time |
-| Survival_ID_Label | OS |
-| Rank_Genes | TRUE/FALSE |
+| Project_Name | [User_Defined] |
+| Expression_Matrix_file | [~/Path/To/Expression.txt] |
+| Meta_Data_File | [~/Path/To/Meta.txt] |
+| Gene_Set_File | [~/Path/To/GeneSetFile.[txt/tsv/gmt/RData] or ~/Path/To/GeneSetFiles.lst] |
+| Output_File_Path | [~/Path/To/Output/Folder/] |
+| Survival_Time_Label | [OS.time/EFS.time/PFI.time/ect] |
+| Survival_ID_Label | [OS/EFS/PFI/ect] |
+| Rank_Genes | [TRUE/FALSE] |
 | Covariate_Column_Label | [optional] |
 | Covariate_Reference | [optional] |
 
