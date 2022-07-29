@@ -44,7 +44,8 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
 
 * **Gene Set File (.gmt/.txt/.tsv/.RData):**
   * This is the file that contains the gene set names and genes for each gene set.
-  * This file is provided but can be replaced for a file of the users choice.
+  * I provide example gene sets from publicly available sources here: https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/tree/main/Example_GeneSets
+    * These include the Molecular Signatures Database, LINCS L1000 small molecule perturbations, and ER Stress Signatures.
   * An .RData list is the preferred format which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
     * The app also accepts gene sets in .gmt format or two-column tab-delimited .tsv/.txt format with the first column being the gene set name repeating for every gene symbol that would be placed in the second column. If either of these three formats are given athe app with automatically convert them to an RData list.
     
@@ -84,6 +85,8 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
 
 ## Running the script
 
+Please keep in mind, depending on how large the gene set files are and if the user chooses to perform the individual gene analysis, this script can take multiple hours to run.
+
 ### R Studio
 
 * The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/blob/main/ssGSEA_Coxh_Ranking_RStudio.R) of the script
@@ -98,9 +101,26 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
 Rscript ssGSEA_Coxh_Ranking_CommandLine.R [parameter_file]
 ```
 
-# Pipeline Steps
+# Pipeline Steps and Output
 
-# Pipeline Output
+## Prepping Data
+
+## ssGSEA Scoring
+
+## Above and Below Median Calculation
+
+## Cox Propotional Hazard Analysis
+
+## Ranking
+
+# Further Applications
+
+The comprehensive table that is output from the analysis will elucidate some of the top pathways or genes that contribute to high-risk patients. If the [DRPPM-PATH-SURVIOER Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER) was generated, these top pathways can be visualized within the app for validation. 
+
+Additionally, to investigate the top pathways the user may take the top user specified number of pathways or a grouping of pathways the user wishes to explore further and input this list of pathways to the DRPPM-Jaccard-Pathway-Connectivity Shiny App and visualize the connectedness of the different pathways based on Jaccard Distance. The app set-up and function is explained in detail on the [GitHub page](https://github.com/shawlab-moffitt/DRPPM-Jaccard-Pathway-Connectivity).
+
+Furthermore, the hazard ratio ranked gene list output from the script can be used as input for the Pre-Ranked GSEA Shiny App which allows users to perform Gene Set Enrichment Analysis with a pre-ranked set of genes on various different gene sets and provides enriched signature tables and enrichment plots for visualization. More information on set-up and funciton on out [GitHub page](https://github.com/shawlab-moffitt/DRPPM-Pre-Rank-GSEA).
+
 
 # Quesions and Comments
 
