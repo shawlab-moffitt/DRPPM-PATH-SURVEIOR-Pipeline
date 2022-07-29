@@ -8,6 +8,7 @@ Param_File <- args[1]
 
 
 
+
 ####----Packages----####
 
 # Base Packages
@@ -266,10 +267,10 @@ for (i in 1:length(ssGSEA_tabs)) {
     relocate(SampleName)
   ssGSEA_BIN_tabs[[paste("ssGSEA.BIN",gs_name,surv_ID,sep = "_")]] <- ssGSEA_BIN
   if (gs_name == "UserGeneSet") {
-    write_delim(as.data.frame(ssgsea),paste(Output_File_Path,Project_Name,"_",surv_ID,"_BIN.txt", sep = ""), delim = '\t')
+    write_delim(ssGSEA_BIN,paste(Output_File_Path,Project_Name,"_",surv_ID,"_BIN.txt", sep = ""), delim = '\t')
   }
   else {
-    write_delim(as.data.frame(ssgsea),paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_BIN.txt", sep = ""), delim = '\t')
+    write_delim(ssGSEA_BIN,paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_BIN.txt", sep = ""), delim = '\t')
   }
   
 }
@@ -306,8 +307,14 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
               "var_class","var_nlevels","contrasts","contrasts_type","n_obs","n_event",
               "exposure","Hazard_Ratio","std.error","statistic","nevent","conf.low",
               "conf.high","ci","p.value","Concordance","Likelihood_Ratio_Pval","Wald_Test_Pval","Logrank_Test_Pval")
-  write(header, file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
-        append = T, sep = '\t', ncolumns = 32)
+  if (gs_name == "UserGeneSet") {
+    write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
+          append = T, sep = '\t', ncolumns = 32)
+  }
+  else {
+    write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
+          append = T, sep = '\t', ncolumns = 32)
+  }
   
   out_df <- data.frame(matrix(header,1))
   colnames(out_df) <- out_df[1,]
@@ -347,8 +354,14 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
         temp_tab_vect <- as.character(c(temp_tab_df[3,]))
         temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p)
         out_df <- rbind(out_df,temp_tab_vect)
-        write(temp_tab_vect, file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
+        if (gs_name == "UserGeneSet") {
+          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        else {
+          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
         
       }
       
@@ -409,8 +422,14 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
         temp_tab_vect_add <- as.character(c(temp_tab_df_add[3,]))
         temp_tab_vect_add <- c(temp_tab_vect_add,con_v_add,lik_p_add,wal_p_add,sco_p_add)
         out_df2 <- rbind(out_df2,temp_tab_vect_add)
-        write(temp_tab_vect_add, file = paste(Output_File_Path,Project_Name,"_Additive_coxh.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
+        if (gs_name == "UserGeneSet") {
+          write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        else {
+          write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
         
         ## Interactive
         temp_tab_int <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," * ",Covariate_Column_Label,sep = "")),
@@ -432,8 +451,14 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
         temp_tab_vect_int <- as.character(c(temp_tab_df_int[3,]))
         temp_tab_vect_int <- c(temp_tab_vect_int,con_v_int,lik_p_int,wal_p_int,sco_p_int)
         out_df3 <- rbind(out_df3,temp_tab_vect_int)
-        write(temp_tab_vect_int, file = paste(Output_File_Path,Project_Name,"_Interactive_coxh.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
+        if (gs_name == "UserGeneSet") {
+          write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        else {
+          write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
         
       }
       
@@ -449,8 +474,15 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     tab_df1_ordered[which(is.na(tab_df1_ordered$p.value)),"p.value"] <- "<0.001"
     tab_df1_ordered <- tab_df1_ordered %>%
       relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
-    write_delim(tab_df1_ordered, paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh_ranked.txt", sep = ""), delim = '\t')
-    
+    if (gs_name == "UserGeneSet") {
+      write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+    else {
+      write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+
     out_df3 <- out_df3[-1,]
     tab_df2 <- out_df3
     ## Rank by P.Value and write to file
@@ -461,8 +493,15 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     tab_df2_ordered[which(is.na(tab_df2_ordered$p.value)),"p.value"] <- "<0.001"
     tab_df2_ordered <- tab_df2_ordered %>%
       relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
-    write_delim(tab_df2_ordered, paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh_ranked.txt", sep = ""), delim = '\t')
-    
+    if (gs_name == "UserGeneSet") {
+      write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+    else {
+      write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+
     
   }
   
