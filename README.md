@@ -90,9 +90,10 @@ Please keep in mind, depending on how large the gene set files are and if the us
 ### R Studio
 
 * The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/blob/main/ssGSEA_Coxh_Ranking_RStudio.R) of the script
-* The user can then select all of the contents and run the script
-* Or the user can run the script as a local job in R Studio.
+* it is recommended to run the script as a local job in R Studio.
   * In the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the script wherever you saved it.
+* Or the user can select all of the contents and run the script
+  * Running the script this way will keep the R studio session busy and you will be able to run anything else while the script is running.
 
 ### Command Line
 * The user can run this script in a command line environment as long as the requirments are met in the environment you are using.
