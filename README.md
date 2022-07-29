@@ -14,7 +14,7 @@
 1. Clone the [GitHub Repository](https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git) into the destination of your choice.
    * Can be done in R Studio Terminal or a terminal of your choice
 ```bash
-git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
+git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 ```
 
 # Requirments
