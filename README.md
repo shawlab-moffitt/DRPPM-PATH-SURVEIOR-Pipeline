@@ -49,6 +49,7 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
   * An .RData list is the preferred format which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
     * The app also accepts gene sets in .gmt format or two-column tab-delimited .tsv/.txt format with the first column being the gene set name repeating for every gene symbol that would be placed in the second column. If either of these three formats are given athe app with automatically convert them to an RData list.
     * If no Gene Set File is provided, the analysis can still run if tyhe user only plans to rank on a gene level
+  * I have provided duiplicate gene sets in both RData and txt file types
     
 * **Gene Set .lst File (.lst) (OPTIONAL):**
   * In the case the user would like to run the pipeline with multiple gene set files, the user can provide a two column file containing the gene set name in the first column and the path to the gene set file in the second column.
