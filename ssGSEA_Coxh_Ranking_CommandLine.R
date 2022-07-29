@@ -110,80 +110,84 @@ if (Rank_Genes_Choice == TRUE) {
   
 }
 
-if (tools::file_ext(Gene_Set_File) == "lst") {
+if (!is.na(Gene_Set_File)) {
   
-  GeneSetFiles <- as.data.frame(read_delim(Gene_Set_File, delim = '\t',col_names = F))
-  colnames(GeneSetFiles) <- c("GeneSetName","GeneSetFilePath")
-  for (i in 1:nrow(GeneSetFiles)) {
+  if (tools::file_ext(Gene_Set_File) == "lst") {
     
-    gs_name <- GeneSetFiles[i,1]
-    gs_path <- GeneSetFiles[i,2]
+    GeneSetFiles <- as.data.frame(read_delim(Gene_Set_File, delim = '\t',col_names = F))
+    colnames(GeneSetFiles) <- c("GeneSetName","GeneSetFilePath")
+    for (i in 1:nrow(GeneSetFiles)) {
+      
+      gs_name <- GeneSetFiles[i,1]
+      gs_path <- GeneSetFiles[i,2]
+      
+      # If user loads GMT File
+      if (tools::file_ext(gs_path) == "gmt") {
+        GeneSet <- read.gmt(gs_path)
+        colnames(GeneSet) <- c("term","gene")
+        GeneSetList <- list()
+        for (j in unique(GeneSet[,1])){
+          GeneSetList[[j]] <- GeneSet[GeneSet[,1] == j,]$gene
+        }
+        GeneSet_list[[gs_name]] <- GeneSetList
+      }
+      # If user loads TSV/TXT file
+      if (tools::file_ext(gs_path) == "tsv" || tools::file_ext(gs_path) == "txt") {
+        GeneSet <- read.delim(gs_path, header = T, sep = '\t')
+        colnames(GeneSet) <- c("term","gene")
+        GeneSetList <- list()
+        for (j in unique(GeneSet[,1])){
+          GeneSetList[[j]] <- GeneSet[GeneSet[,1] == j,]$gene
+        }
+        GeneSet_list[[gs_name]] <- GeneSetList
+      }
+      # If user loads RData list file
+      if (tools::file_ext(gs_path) == "RData") {
+        loadRData <- function(fileName){
+          #loads an RData file, and returns it
+          load(fileName)
+          get(ls()[ls() != "fileName"])
+        }
+        GeneSetList <- loadRData(gs_path)
+        GeneSet_list[[gs_name]] <- GeneSetList
+      }
+    }
+    
+  }
+  ## User upload only 1 gene set
+  if (tools::file_ext(Gene_Set_File) != "lst") {
     
     # If user loads GMT File
-    if (tools::file_ext(gs_path) == "gmt") {
-      GeneSet <- read.gmt(gs_path)
+    if (tools::file_ext(Gene_Set_File) == "gmt") {
+      GeneSet <- read.gmt(Gene_Set_File)
       colnames(GeneSet) <- c("term","gene")
       GeneSetList <- list()
-      for (j in unique(GeneSet[,1])){
-        GeneSetList[[j]] <- GeneSet[GeneSet[,1] == j,]$gene
+      for (i in unique(GeneSet[,1])){
+        GeneSetList[[i]] <- GeneSet[GeneSet[,1] == i,]$gene
       }
-      GeneSet_list[[gs_name]] <- GeneSetList
+      GeneSet_list[["UserGeneSet"]] <- GeneSetList
     }
     # If user loads TSV/TXT file
-    if (tools::file_ext(gs_path) == "tsv" || tools::file_ext(gs_path) == "txt") {
-      GeneSet <- read.delim(gs_path, header = T, sep = '\t')
+    if (tools::file_ext(Gene_Set_File) == "tsv" || tools::file_ext(Gene_Set_File) == "txt") {
+      GeneSet <- read.delim(Gene_Set_File, header = T, sep = '\t')
       colnames(GeneSet) <- c("term","gene")
       GeneSetList <- list()
-      for (j in unique(GeneSet[,1])){
-        GeneSetList[[j]] <- GeneSet[GeneSet[,1] == j,]$gene
+      for (i in unique(GeneSet[,1])){
+        GeneSetList[[i]] <- GeneSet[GeneSet[,1] == i,]$gene
       }
-      GeneSet_list[[gs_name]] <- GeneSetList
+      GeneSet_list[["UserGeneSet"]] <- GeneSetList
     }
     # If user loads RData list file
-    if (tools::file_ext(gs_path) == "RData") {
+    if (tools::file_ext(Gene_Set_File) == "RData") {
       loadRData <- function(fileName){
         #loads an RData file, and returns it
         load(fileName)
         get(ls()[ls() != "fileName"])
       }
-      GeneSetList <- loadRData(gs_path)
-      GeneSet_list[[gs_name]] <- GeneSetList
+      GeneSetList <- loadRData(Gene_Set_File)
+      GeneSet_list[["UserGeneSet"]] <- GeneSetList
     }
-  }
-  
-}
-## User upload only 1 gene set
-if (tools::file_ext(Gene_Set_File) != "lst") {
-  
-  # If user loads GMT File
-  if (tools::file_ext(Gene_Set_File) == "gmt") {
-    GeneSet <- read.gmt(Gene_Set_File)
-    colnames(GeneSet) <- c("term","gene")
-    GeneSetList <- list()
-    for (i in unique(GeneSet[,1])){
-      GeneSetList[[i]] <- GeneSet[GeneSet[,1] == i,]$gene
-    }
-    GeneSet_list[["UserGeneSet"]] <- GeneSetList
-  }
-  # If user loads TSV/TXT file
-  if (tools::file_ext(Gene_Set_File) == "tsv" || tools::file_ext(Gene_Set_File) == "txt") {
-    GeneSet <- read.delim(Gene_Set_File, header = T, sep = '\t')
-    colnames(GeneSet) <- c("term","gene")
-    GeneSetList <- list()
-    for (i in unique(GeneSet[,1])){
-      GeneSetList[[i]] <- GeneSet[GeneSet[,1] == i,]$gene
-    }
-    GeneSet_list[["UserGeneSet"]] <- GeneSetList
-  }
-  # If user loads RData list file
-  if (tools::file_ext(Gene_Set_File) == "RData") {
-    loadRData <- function(fileName){
-      #loads an RData file, and returns it
-      load(fileName)
-      get(ls()[ls() != "fileName"])
-    }
-    GeneSetList <- loadRData(Gene_Set_File)
-    GeneSet_list[["UserGeneSet"]] <- GeneSetList
+    
   }
   
 }
