@@ -4,6 +4,19 @@
 
 # Installation
 
+## Via Download
+
+1. Download the [Zip File](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/archive/refs/heads/main.zip) from this GitHub repository: https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline
+2. Unzip the downloaded file into the folder of your choice.
+
+## Via Git Clone
+
+1. Clone the [GitHub Repository](https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git) into the destination of your choice.
+   * Can be done in R Studio Terminal or a terminal of your choice
+```bash
+git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
+```
+
 # Requirments
 
 * `R` - https://cran.r-project.org/src/base/R-4/
@@ -45,6 +58,8 @@
 
 # Set-Up
 
+## Parameter File
+
 * This file will contain all the necessary information for the pipeline to run.
 * Some parameters are optional.
 * Do not include a header in this file.
@@ -66,6 +81,22 @@
 | Rank_Genes | [TRUE/FALSE] |
 | Covariate_Column_Label | [optional] |
 | Covariate_Reference | [optional] |
+
+## Running the script
+
+### R Studio
+
+* The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/blob/main/ssGSEA_Coxh_Ranking_RStudio.R) of the script
+* The user can then select all of the contents and run the script
+* Or the user can run the script as a local job in R Studio.
+  * In the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the script wherever you saved it.
+
+### Command Line
+* The user can run this script in a command line environment as long as the requirments are met in the environment you are using.
+* When the script and parameter file are in the desired directory run the command below:
+```{linux}
+Rscript ssGSEA_Coxh_Ranking_CommandLine.R [parameter_file]
+```
 
 # Pipeline Steps
 
