@@ -6,6 +6,7 @@ Param_File <- "~/Path/to/parameter/file.txt"
 
 
 
+
 ####----Packages----####
 
 # Base Packages
@@ -67,6 +68,11 @@ expr <- as.matrix(expr[,-1])
 meta <- as.data.frame(read_delim(Meta_Data_File,delim = '\t',col_names = T))
 colnames(meta)[1] <- "SampleName"
 
+if (length(Covariate_Column_Label) > 0) {
+  Covariate_Column_Label <- NA
+  Covariate_Reference <- NA
+}
+
 ## Remove samples with NA in the survival data columns
 meta_tabs <- list()
 expr_tabs <- list()
@@ -80,10 +86,8 @@ for (j in 1:length(surv_time_labs)) {
   
   meta2 <- meta[!is.na(meta[,Survival_Time]),]
   meta2 <- meta2[!is.na(meta2[,Survival_ID]),]
-  if (length(Covariate_Column_Label) > 0) {
-    if (!is.na(Covariate_Column_Label)) {
-      meta2 <- meta2[!is.na(meta2[,Covariate_Column_Label]),]
-    }
+  if (!is.na(Covariate_Column_Label)) {
+    meta2 <- meta2[!is.na(meta2[,Covariate_Column_Label]),]
   }
   expr2 <- expr[,which(colnames(expr) %in% meta2[,1])]
   
@@ -327,192 +331,186 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
   out_df3 <- data.frame(matrix(header,1))
   colnames(out_df3) <- out_df3[1,]
   
-  ## For covariate analysis
-  if (length(Covariate_Column_Label) > 0) {
   
-    ## For non-interactive pathway analysis
-    if (is.na(Covariate_Column_Label)) {
-      
-      ## Loop through to perform coxh function
-      for (j in calc_cols) {
-        
-        meta_ssgsea_sub <- ssGSEA_BIN_meta[,c(Survival_Time,Survival_ID,j)]
-        meta_ssgsea_sub[,j] <- as.factor(meta_ssgsea_sub[,j])
-        meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = "Low_BelowMedian")
-        
-        if (length(levels(as.factor(meta_ssgsea_sub[,j]))) > 1) {
-          
-          temp_tab <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j,sep = "")),
-                            data = meta_ssgsea_sub) %>% 
-            gtsummary::tbl_regression(exp = TRUE) %>%
-            as_gt()
-          temp_tab_df <- as.data.frame(temp_tab)
-          tab <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j,sep = "")),
-                       data = meta_ssgsea_sub)
-          out <- capture.output(summary(tab))
-          con_line <- grep("^Concordance=",out,value = T)
-          con_v <- str_split(con_line," ")[[1]][2]
-          lik_line <- grep("^Likelihood ratio test=",out,value = T)
-          lik_p <- str_split(lik_line,"=")[[1]][3]
-          wal_line <- grep("^Wald test",out,value = T)
-          wal_p <- str_split(wal_line,"=")[[1]][3]
-          sco_line <- grep("^Score ",out,value = T)
-          sco_p <- str_split(sco_line,"=")[[1]][3]
-          temp_tab_vect <- as.character(c(temp_tab_df[3,]))
-          temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p)
-          out_df <- rbind(out_df,temp_tab_vect)
-          if (gs_name == "UserGeneSet") {
-            write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          else {
-            write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          
-        }
-        
-      }
-      
-      out_df <- out_df[-1,]
-      tab_df3 <- out_df
-      tab_df3$variable <- gsub(".BIN$","",tab_df3$variable)
-      tab_df3$p.value <- gsub(">0.9","0.9",tab_df3$p.value)
-      tab_df3$p.value <- as.numeric(tab_df3$p.value)
-      tab_df3_ordered <- tab_df3[order(tab_df3$p.value, decreasing = F, na.last = F),]
-      tab_df3_ordered[which(is.na(tab_df3_ordered$p.value)),"p.value"] <- "<0.001"
-      tab_df3_ordered <- tab_df3_ordered %>%
-        relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
-      write_delim(tab_df3_ordered, paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh_ranked.txt", sep = ""), delim = '\t')
-      
-    }
-  }
-  
-  ## For covariate analysis
-  if (length(Covariate_Column_Label) > 0) {
+  ## For non-interactive pathway analysis
+  if (is.na(Covariate_Column_Label)) {
     
-    if (!is.na(Covariate_Column_Label)) {
+    ## Loop through to perform coxh function
+    for (j in calc_cols) {
       
-      ## Loop through to perform coxh function
-      for (j in calc_cols) {
-          
-        meta_ssgsea_sub <- ssGSEA_BIN_meta[,c(Survival_Time,Survival_ID,j,Covariate_Column_Label)]
-        # factor hi/lo column
-        meta_ssgsea_sub[,j] <- as.factor(meta_ssgsea_sub[,j])
-        meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = "Low_BelowMedian")
-        # factor reference column
-        meta_ssgsea_sub[,Covariate_Column_Label] <- as.factor(meta_ssgsea_sub[,Covariate_Column_Label])
-        if (is.na(Covariate_Reference)) {
-          current_ref <- levels(meta_ssgsea_sub[,Covariate_Column_Label])[1]
-          print(paste("No Covariate Reference Given. Using ",current_ref," as Coxh reference variable.",sep = ""))
+      meta_ssgsea_sub <- ssGSEA_BIN_meta[,c(Survival_Time,Survival_ID,j)]
+      meta_ssgsea_sub[,j] <- as.factor(meta_ssgsea_sub[,j])
+      meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = "Low_BelowMedian")
+      
+      if (length(levels(as.factor(meta_ssgsea_sub[,j]))) > 1) {
+        
+        temp_tab <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j,sep = "")),
+                          data = meta_ssgsea_sub) %>% 
+          gtsummary::tbl_regression(exp = TRUE) %>%
+          as_gt()
+        temp_tab_df <- as.data.frame(temp_tab)
+        tab <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j,sep = "")),
+                     data = meta_ssgsea_sub)
+        out <- capture.output(summary(tab))
+        con_line <- grep("^Concordance=",out,value = T)
+        con_v <- str_split(con_line," ")[[1]][2]
+        lik_line <- grep("^Likelihood ratio test=",out,value = T)
+        lik_p <- str_split(lik_line,"=")[[1]][3]
+        wal_line <- grep("^Wald test",out,value = T)
+        wal_p <- str_split(wal_line,"=")[[1]][3]
+        sco_line <- grep("^Score ",out,value = T)
+        sco_p <- str_split(sco_line,"=")[[1]][3]
+        temp_tab_vect <- as.character(c(temp_tab_df[3,]))
+        temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p)
+        out_df <- rbind(out_df,temp_tab_vect)
+        if (gs_name == "UserGeneSet") {
+          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
         }
         else {
-          meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = Covariate_Reference)
-        }
-        
-        if (length(levels(as.factor(meta_ssgsea_sub[,j]))) > 1) {
-          
-          ## Additive
-          temp_tab_add <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," + ",Covariate_Column_Label,sep = "")),
-                                data = meta_ssgsea_sub) %>% 
-            gtsummary::tbl_regression(exp = TRUE) %>%
-            as_gt()
-          temp_tab_df_add <- as.data.frame(temp_tab_add)
-          tab_add <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," + ",Covariate_Column_Label,sep = "")),
-                           data = meta_ssgsea_sub)
-          out_add <- capture.output(summary(tab_add))
-          con_line_add <- grep("^Concordance=",out_add,value = T)
-          con_v_add <- str_split(con_line_add," ")[[1]][2]
-          lik_line_add <- grep("^Likelihood ratio test=",out_add,value = T)
-          lik_p_add <- str_split(lik_line_add,"=")[[1]][3]
-          wal_line_add <- grep("^Wald test",out_add,value = T)
-          wal_p_add <- str_split(wal_line_add,"=")[[1]][3]
-          sco_line_add <- grep("^Score ",out_add,value = T)
-          sco_p_add <- str_split(sco_line_add,"=")[[1]][3]
-          temp_tab_vect_add <- as.character(c(temp_tab_df_add[3,]))
-          temp_tab_vect_add <- c(temp_tab_vect_add,con_v_add,lik_p_add,wal_p_add,sco_p_add)
-          out_df2 <- rbind(out_df2,temp_tab_vect_add)
-          if (gs_name == "UserGeneSet") {
-            write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          else {
-            write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          
-          ## Interactive
-          temp_tab_int <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," * ",Covariate_Column_Label,sep = "")),
-                                data = meta_ssgsea_sub) %>% 
-            gtsummary::tbl_regression(exp = TRUE) %>%
-            as_gt()
-          temp_tab_df_int <- as.data.frame(temp_tab_int)
-          tab_int <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," * ",Covariate_Column_Label,sep = "")),
-                           data = meta_ssgsea_sub)
-          out_int <- capture.output(summary(tab_int))
-          con_line_int <- grep("^Concordance=",out_int,value = T)
-          con_v_int <- str_split(con_line_int," ")[[1]][2]
-          lik_line_int <- grep("^Likelihood ratio test=",out_int,value = T)
-          lik_p_int <- str_split(lik_line_int,"=")[[1]][3]
-          wal_line_int <- grep("^Wald test",out_int,value = T)
-          wal_p_int <- str_split(wal_line_int,"=")[[1]][3]
-          sco_line_int <- grep("^Score ",out_int,value = T)
-          sco_p_int <- str_split(sco_line_int,"=")[[1]][3]
-          temp_tab_vect_int <- as.character(c(temp_tab_df_int[3,]))
-          temp_tab_vect_int <- c(temp_tab_vect_int,con_v_int,lik_p_int,wal_p_int,sco_p_int)
-          out_df3 <- rbind(out_df3,temp_tab_vect_int)
-          if (gs_name == "UserGeneSet") {
-            write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          else {
-            write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh.txt", sep = ""),
-                  append = T, sep = '\t', ncolumns = 32)
-          }
-          
+          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
         }
         
       }
       
-      out_df2 <- out_df2[-1,]
-      tab_df1 <- out_df2
-      ## Rank by P.Value and write to file
-      tab_df1$variable <- gsub(".BIN$","",tab_df1$variable)
-      tab_df1$p.value <- gsub(">0.9","0.9",tab_df1$p.value)
-      tab_df1$p.value <- as.numeric(tab_df1$p.value)
-      tab_df1_ordered <- tab_df1[order(tab_df1$p.value, decreasing = F, na.last = F),]
-      tab_df1_ordered[which(is.na(tab_df1_ordered$p.value)),"p.value"] <- "<0.001"
-      tab_df1_ordered <- tab_df1_ordered %>%
-        relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
-      if (gs_name == "UserGeneSet") {
-        write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh_ranked.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
-      }
-      else {
-        write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh_ranked.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
-      }
+    }
+    
+    out_df <- out_df[-1,]
+    tab_df3 <- out_df
+    tab_df3$variable <- gsub(".BIN$","",tab_df3$variable)
+    tab_df3$p.value <- gsub(">0.9","0.9",tab_df3$p.value)
+    tab_df3$p.value <- as.numeric(tab_df3$p.value)
+    tab_df3_ordered <- tab_df3[order(tab_df3$p.value, decreasing = F, na.last = F),]
+    tab_df3_ordered[which(is.na(tab_df3_ordered$p.value)),"p.value"] <- "<0.001"
+    tab_df3_ordered <- tab_df3_ordered %>%
+      relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
+    write_delim(tab_df3_ordered, paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh_ranked.txt", sep = ""), delim = '\t')
+    
+  }
   
-      out_df3 <- out_df3[-1,]
-      tab_df2 <- out_df3
-      ## Rank by P.Value and write to file
-      tab_df2$variable <- gsub(".BIN$","",tab_df2$variable)
-      tab_df2$p.value <- gsub(">0.9","0.9",tab_df2$p.value)
-      tab_df2$p.value <- as.numeric(tab_df2$p.value)
-      tab_df2_ordered <- tab_df2[order(tab_df2$p.value, decreasing = F, na.last = F),]
-      tab_df2_ordered[which(is.na(tab_df2_ordered$p.value)),"p.value"] <- "<0.001"
-      tab_df2_ordered <- tab_df2_ordered %>%
-        relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
-      if (gs_name == "UserGeneSet") {
-        write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh_ranked.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
-        }
+    
+  if (!is.na(Covariate_Column_Label)) {
+    
+    ## Loop through to perform coxh function
+    for (j in calc_cols) {
+        
+      meta_ssgsea_sub <- ssGSEA_BIN_meta[,c(Survival_Time,Survival_ID,j,Covariate_Column_Label)]
+      # factor hi/lo column
+      meta_ssgsea_sub[,j] <- as.factor(meta_ssgsea_sub[,j])
+      meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = "Low_BelowMedian")
+      # factor reference column
+      meta_ssgsea_sub[,Covariate_Column_Label] <- as.factor(meta_ssgsea_sub[,Covariate_Column_Label])
+      if (is.na(Covariate_Reference)) {
+        current_ref <- levels(meta_ssgsea_sub[,Covariate_Column_Label])[1]
+        print(paste("No Covariate Reference Given. Using ",current_ref," as Coxh reference variable.",sep = ""))
+      }
       else {
-        write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh_ranked.txt", sep = ""),
-              append = T, sep = '\t', ncolumns = 32)
+        meta_ssgsea_sub[,j] <- relevel(meta_ssgsea_sub[,j], ref = Covariate_Reference)
+      }
+      
+      if (length(levels(as.factor(meta_ssgsea_sub[,j]))) > 1) {
+        
+        ## Additive
+        temp_tab_add <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," + ",Covariate_Column_Label,sep = "")),
+                              data = meta_ssgsea_sub) %>% 
+          gtsummary::tbl_regression(exp = TRUE) %>%
+          as_gt()
+        temp_tab_df_add <- as.data.frame(temp_tab_add)
+        tab_add <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," + ",Covariate_Column_Label,sep = "")),
+                         data = meta_ssgsea_sub)
+        out_add <- capture.output(summary(tab_add))
+        con_line_add <- grep("^Concordance=",out_add,value = T)
+        con_v_add <- str_split(con_line_add," ")[[1]][2]
+        lik_line_add <- grep("^Likelihood ratio test=",out_add,value = T)
+        lik_p_add <- str_split(lik_line_add,"=")[[1]][3]
+        wal_line_add <- grep("^Wald test",out_add,value = T)
+        wal_p_add <- str_split(wal_line_add,"=")[[1]][3]
+        sco_line_add <- grep("^Score ",out_add,value = T)
+        sco_p_add <- str_split(sco_line_add,"=")[[1]][3]
+        temp_tab_vect_add <- as.character(c(temp_tab_df_add[3,]))
+        temp_tab_vect_add <- c(temp_tab_vect_add,con_v_add,lik_p_add,wal_p_add,sco_p_add)
+        out_df2 <- rbind(out_df2,temp_tab_vect_add)
+        if (gs_name == "UserGeneSet") {
+          write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
         }
+        else {
+          write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        
+        ## Interactive
+        temp_tab_int <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," * ",Covariate_Column_Label,sep = "")),
+                              data = meta_ssgsea_sub) %>% 
+          gtsummary::tbl_regression(exp = TRUE) %>%
+          as_gt()
+        temp_tab_df_int <- as.data.frame(temp_tab_int)
+        tab_int <- coxph(as.formula(paste("Surv(",Survival_Time,",",Survival_ID,") ~ ",j," * ",Covariate_Column_Label,sep = "")),
+                         data = meta_ssgsea_sub)
+        out_int <- capture.output(summary(tab_int))
+        con_line_int <- grep("^Concordance=",out_int,value = T)
+        con_v_int <- str_split(con_line_int," ")[[1]][2]
+        lik_line_int <- grep("^Likelihood ratio test=",out_int,value = T)
+        lik_p_int <- str_split(lik_line_int,"=")[[1]][3]
+        wal_line_int <- grep("^Wald test",out_int,value = T)
+        wal_p_int <- str_split(wal_line_int,"=")[[1]][3]
+        sco_line_int <- grep("^Score ",out_int,value = T)
+        sco_p_int <- str_split(sco_line_int,"=")[[1]][3]
+        temp_tab_vect_int <- as.character(c(temp_tab_df_int[3,]))
+        temp_tab_vect_int <- c(temp_tab_vect_int,con_v_int,lik_p_int,wal_p_int,sco_p_int)
+        out_df3 <- rbind(out_df3,temp_tab_vect_int)
+        if (gs_name == "UserGeneSet") {
+          write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        else {
+          write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh.txt", sep = ""),
+                append = T, sep = '\t', ncolumns = 32)
+        }
+        
+      }
+      
+    }
+    
+    out_df2 <- out_df2[-1,]
+    tab_df1 <- out_df2
+    ## Rank by P.Value and write to file
+    tab_df1$variable <- gsub(".BIN$","",tab_df1$variable)
+    tab_df1$p.value <- gsub(">0.9","0.9",tab_df1$p.value)
+    tab_df1$p.value <- as.numeric(tab_df1$p.value)
+    tab_df1_ordered <- tab_df1[order(tab_df1$p.value, decreasing = F, na.last = F),]
+    tab_df1_ordered[which(is.na(tab_df1_ordered$p.value)),"p.value"] <- "<0.001"
+    tab_df1_ordered <- tab_df1_ordered %>%
+      relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
+    if (gs_name == "UserGeneSet") {
+      write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+    else {
+      write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+    }
+
+    out_df3 <- out_df3[-1,]
+    tab_df2 <- out_df3
+    ## Rank by P.Value and write to file
+    tab_df2$variable <- gsub(".BIN$","",tab_df2$variable)
+    tab_df2$p.value <- gsub(">0.9","0.9",tab_df2$p.value)
+    tab_df2$p.value <- as.numeric(tab_df2$p.value)
+    tab_df2_ordered <- tab_df2[order(tab_df2$p.value, decreasing = F, na.last = F),]
+    tab_df2_ordered[which(is.na(tab_df2_ordered$p.value)),"p.value"] <- "<0.001"
+    tab_df2_ordered <- tab_df2_ordered %>%
+      relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Criteria)
+    if (gs_name == "UserGeneSet") {
+      write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
+      }
+    else {
+      write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh_ranked.txt", sep = ""),
+            append = T, sep = '\t', ncolumns = 32)
       }
     }
-  
 }
+
 
