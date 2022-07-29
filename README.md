@@ -48,6 +48,7 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
     * These include the Molecular Signatures Database, LINCS L1000 small molecule perturbations, and ER Stress Signatures.
   * An .RData list is the preferred format which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
     * The app also accepts gene sets in .gmt format or two-column tab-delimited .tsv/.txt format with the first column being the gene set name repeating for every gene symbol that would be placed in the second column. If either of these three formats are given athe app with automatically convert them to an RData list.
+    * If no Gene Set File is provided, the analysis can still run if tyhe user only plans to rank on a gene level
     
 * **Gene Set .lst File (.lst) (OPTIONAL):**
   * In the case the user would like to run the pipeline with multiple gene set files, the user can provide a two column file containing the gene set name in the first column and the path to the gene set file in the second column.
@@ -67,6 +68,7 @@ git clone https://github.com/shawlab-moffitt/DRPPM-SURVIVE.git
 * The order does not matter, but the parameter names do matter
 * The survival time and ID label should be what is in your data that you want to analyze. For advanced use, you may input a comma seperated list of survival time and ID labels, but you must have a time and ID column for each survival data type and they must be in the same order for both Time and ID.
 * The "Rank_Genes" parameter is an optional function that will run the analysis based on each gene in the expression data. This will produce a table of genes ranked by hazard ratio as well as the gene set(s) being run.
+  * The user may choose to only rank genes and leave the Gene_Set_File parameter blank if they choose.
 * The Covariate parameters allow the user to perform an interactive Coxh survival analysis between the pathway High/Low score and a specified categorical column from the meta/clinical data. The user input would be the column name of the covariate.
   * If performing this analysis, it is requested the user provide a reference variable for the Coxh analysis, this would go in the "Covariate_Reference" parameter below. If this is not specified the function will use the first level from the factored covariate column.
 
