@@ -80,8 +80,10 @@ for (j in 1:length(surv_time_labs)) {
   
   meta2 <- meta[!is.na(meta[,Survival_Time]),]
   meta2 <- meta2[!is.na(meta2[,Survival_ID]),]
-  if (!is.na(Covariate_Column_Label)) {
-    meta2 <- meta2[!is.na(meta2[,Covariate_Column_Label]),]
+  if (length(Covariate_Column_Label) > 0) {
+    if (!is.na(Covariate_Column_Label)) {
+      meta2 <- meta2[!is.na(meta2[,Covariate_Column_Label]),]
+    }
   }
   expr2 <- expr[,which(colnames(expr) %in% meta2[,1])]
   
