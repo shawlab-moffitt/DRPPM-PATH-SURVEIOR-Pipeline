@@ -41,6 +41,10 @@ Meta_Data_File <- params[which(params[,1] == "Meta_Data_File"),2]
 Gene_Set_File <- params[which(params[,1] == "Gene_Set_File"),2]
 # Output File Path
 Output_File_Path <- params[which(params[,1] == "Output_File_Path"),2]
+last_char <- str_sub(Output_File_Path,-1,-1)
+if (last_char != "/") {
+  Output_File_Path <- paste(Output_File_Path,"/",sep = "")
+}
 # Survival Time ID
 Survival_Time_Label <- params[which(params[,1] == "Survival_Time_Label"),2]
 surv_time_labs <- unlist(str_split(Survival_Time_Label,","))
@@ -103,16 +107,17 @@ print("####----Loading in Gene Set----####")
 
 GeneSet_list <- list()
 
-if (Rank_Genes_Choice == TRUE) {
-  
-  gmt <- data.frame(term = rownames(expr),gene = rownames(expr))
-  GeneSetList <- list()
-  for (i in unique(gmt[,1])){
-    GeneSetList[[i]] <- gmt[gmt[,1] == i,]$gene
-  }
-  GeneSet_list[["Genes"]] <- GeneSetList
-  
-}
+#if (Rank_Genes_Choice == TRUE) {
+#  
+#  gmt <- data.frame(term = rownames(expr),gene = rownames(expr))
+#  GeneSetList <- list()
+#  for (i in unique(gmt[,1])){
+#    GeneSetList[[i]] <- gmt[gmt[,1] == i,]$gene
+#  }
+#  GeneSet_list[["Genes"]] <- GeneSetList
+#  
+#  
+#}
 
 if (!is.na(Gene_Set_File)) {
   
@@ -232,7 +237,7 @@ for (i in 1:length(GeneSet_list)){
     if (gs_name == "UserGeneSet") {
       write_delim(as.data.frame(ssgsea),paste(Output_File_Path,Project_Name,"_",surv_ID,"_ssGSEA_score.txt", sep = ""), delim = '\t')
     }
-    else {
+    if (gs_name != "UserGeneSet") {
       write_delim(as.data.frame(ssgsea),paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_ssGSEA_score.txt", sep = ""), delim = '\t')
     }
   }
@@ -247,6 +252,39 @@ for (i in 1:length(GeneSet_list)){
 print("####----Performing Binary Analysis----####")
 
 ssGSEA_BIN_tabs <- list()
+if (Rank_Genes_Choice == TRUE) {
+  
+  for (j in 1:length(surv_pairs)) {
+    
+    Survival_Time <- surv_pairs[[j]][1]
+    Survival_ID <- surv_pairs[[j]][2]
+    surv_ID <- names(surv_pairs)[j]
+    
+    expr_temp <- expr_tabs[[j]]
+    expr_temp2 <- as.data.frame(t(expr_temp))
+    ssgsea <- expr_temp2
+    
+    ## loop through each gene set to get BIN
+    ## Perform High/Low function
+    new_col_list <- c()
+    for (i in colnames(ssgsea)) {
+      
+      ssgsea[,paste(i,'_BIN',sep = "")] <- highlow(ssgsea[, which(colnames(ssgsea) == i)])
+      new_col_list <- c(new_col_list,paste(i,'_BIN',sep = ""))
+      
+    }
+    
+    ## Reformat
+    ssGSEA_BIN <- ssgsea[,new_col_list]
+    ssGSEA_BIN$SampleName <- rownames(ssGSEA_BIN)
+    ssGSEA_BIN <- ssGSEA_BIN %>%
+      relocate(SampleName)
+    ssGSEA_BIN_tabs[[paste("ssGSEA.BIN","Genes",surv_ID,sep = "_")]] <- ssGSEA_BIN
+    write_delim(ssGSEA_BIN,paste(Output_File_Path,Project_Name,"_",surv_ID,"_Genes","_BIN.txt", sep = ""), delim = '\t')
+    
+  }
+  
+}
 for (i in 1:length(ssGSEA_tabs)) {
   
   ssgsea <- ssGSEA_tabs[[i]]
@@ -277,7 +315,7 @@ for (i in 1:length(ssGSEA_tabs)) {
   if (gs_name == "UserGeneSet") {
     write_delim(ssGSEA_BIN,paste(Output_File_Path,Project_Name,"_",surv_ID,"_BIN.txt", sep = ""), delim = '\t')
   }
-  else {
+  if (gs_name != "UserGeneSet") {
     write_delim(ssGSEA_BIN,paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_BIN.txt", sep = ""), delim = '\t')
   }
   
@@ -319,7 +357,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
           append = T, sep = '\t', ncolumns = 32)
   }
-  else {
+  if (gs_name != "UserGeneSet") {
     write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
           append = T, sep = '\t', ncolumns = 32)
   }
@@ -364,11 +402,11 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
         temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p)
         out_df <- rbind(out_df,temp_tab_vect)
         if (gs_name == "UserGeneSet") {
-          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
+          write(temp_tab_vect,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
-        else {
-          write(header,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
+        if (gs_name != "UserGeneSet") {
+          write(temp_tab_vect,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
         
@@ -435,7 +473,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
           write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
-        else {
+        if (gs_name != "UserGeneSet") {
           write(temp_tab_vect_add,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
@@ -464,7 +502,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
           write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
-        else {
+        if (gs_name != "UserGeneSet") {
           write(temp_tab_vect_int,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh.txt", sep = ""),
                 append = T, sep = '\t', ncolumns = 32)
         }
@@ -487,7 +525,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
       write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Additive_coxh_ranked.txt", sep = ""),
             append = T, sep = '\t', ncolumns = 32)
     }
-    else {
+    if (gs_name != "UserGeneSet") {
       write(tab_df1_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Additive_coxh_ranked.txt", sep = ""),
             append = T, sep = '\t', ncolumns = 32)
     }
@@ -506,7 +544,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
       write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_Interactive_coxh_ranked.txt", sep = ""),
             append = T, sep = '\t', ncolumns = 32)
       }
-    else {
+    if (gs_name != "UserGeneSet") {
       write(tab_df2_ordered,file = paste(Output_File_Path,Project_Name,"_",surv_ID,"_",gs_name,"_Interactive_coxh_ranked.txt", sep = ""),
             append = T, sep = '\t', ncolumns = 32)
       }
