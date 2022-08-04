@@ -621,7 +621,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
       relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Likelihood_Ratio_AdjPval_BH,Wald_Test_AdjPval_BH,Logrank_Test_AdjPval_BH,Criteria)
     new_header <- colnames(tab_df1_ordered)
     colnames(tab_df1_ordered) <- colnames(out_df2_top)
-    tab_df1_ordered <- rbind(out_df_top,new_header,tab_df1_ordered)
+    tab_df1_ordered <- rbind(out_df2_top,new_header,tab_df1_ordered)
     new_file_add <- gsub(".txt","_ranked.txt",file_made_add)
     write_delim(tab_df1_ordered, new_file_add, delim = '\t', col_names = F, na = "")
     ## Interactive
@@ -638,7 +638,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
       relocate(variable,Hazard_Ratio,ci,p.value,Concordance,Likelihood_Ratio_Pval,Wald_Test_Pval,Logrank_Test_Pval,Likelihood_Ratio_AdjPval_BH,Wald_Test_AdjPval_BH,Logrank_Test_AdjPval_BH,Criteria)
     new_header <- colnames(tab_df2_ordered)
     colnames(tab_df2_ordered) <- colnames(out_df3_top)
-    tab_df2_ordered <- rbind(out_df_top,new_header,tab_df2_ordered)
+    tab_df2_ordered <- rbind(out_df3_top,new_header,tab_df2_ordered)
     new_file_int <- gsub(".txt","_ranked.txt",file_made_int)
     write_delim(tab_df2_ordered, new_file_int, delim = '\t', col_names = F, na = "")
   }
