@@ -67,9 +67,12 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 * Some parameters are optional.
 * Do not include a header in this file.
 * The order does not matter, but the parameter names do matter
-* The survival time and ID label should be what is in your data that you want to analyze. For advanced use, you may input a comma seperated list of survival time and ID labels, but you must have a time and ID column for each survival data type and they must be in the same order for both Time and ID.
+* The Survival Time and ID Label should be the column names of the respective survival data you want to analyze.
+  * For the simplified version only input one survival type. For example, only run through with OS data and your column names may be OS.time and OS.ID (make sure your column names match what you put in the parameter file.
+  * For advanced use (in the advanced folder), you may input a comma seperated list of survival time and ID labels, but you must have a time and ID column for each survival data type and they must be in the same order for both Time and ID.
 * The "Rank_Genes" parameter is an optional function that will run the analysis based on each gene in the expression data. This will produce a table of genes ranked by hazard ratio as well as the gene set(s) being run.
   * The user may choose to only rank genes and leave the Gene_Set_File parameter blank if they choose.
+  * This analysis may take an extended period of time.
 * The Covariate parameters allow the user to perform an interactive Coxh survival analysis between the pathway High/Low score and a specified categorical column from the meta/clinical data. The user input would be the column name of the covariate.
   * If performing this analysis, it is requested the user provide a reference variable for the Coxh analysis, this would go in the "Covariate_Reference" parameter below. If this is not specified the function will use the first level from the factored covariate column.
 
@@ -79,6 +82,7 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 | Expression_Matrix_file | [~/Path/To/Expression.txt] |
 | Meta_Data_File | [~/Path/To/Meta.txt] |
 | Gene_Set_File | [~/Path/To/GeneSetFile.[txt/tsv/gmt/RData] or ~/Path/To/GeneSetFiles.lst] |
+| Gene_Set_Name | [Desired Name for gene set (optional)]
 | Output_File_Path | [~/Path/To/Output/Folder/] |
 | Survival_Time_Label | [OS.time/EFS.time/PFI.time/ect] |
 | Survival_ID_Label | [OS/EFS/PFI/ect] |
