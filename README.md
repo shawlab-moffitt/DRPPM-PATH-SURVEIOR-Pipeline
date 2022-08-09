@@ -129,9 +129,9 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 
 <p align="center">
 ![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true)
-![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true)
  </p>
-
+ 
+ ![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true)
 ### Command Line
 * The user can run the [command line verison](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/CommandLine_Scripts/ssGSEA_Coxh_Ranking.R) of the script in a command line environment as long as the requirments are met in the environment you are using.
 * When the script and parameter file are in the desired directory run the command below:
