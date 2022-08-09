@@ -127,8 +127,10 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 * The user can select all of the contents and run the script or run section by section
   * Running the script this way will keep the R studio session busy and you will be able to run anything else while the script is running.
 
+<p align="center">
 ![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true)
 ![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true)
+ </p>
 
 ### Command Line
 * The user can run the [command line verison](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/CommandLine_Scripts/ssGSEA_Coxh_Ranking.R) of the script in a command line environment as long as the requirments are met in the environment you are using.
