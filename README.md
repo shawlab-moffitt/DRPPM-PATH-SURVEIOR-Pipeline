@@ -156,19 +156,44 @@ Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
 
 ## Advanced Use Case
 
-* The user may use the 
+
 
 # Pipeline Steps and Output
 
 ## Prepping Data
 
+* The script is set up to install any packages that are not found. The user may pre-load these is they choose
+* The script begins by reading in the parameter file and files within the parameters file to set up the environment
+* If survival data or covariate data is missing from any samples they will be removed, as they could skew the median and binning of samples by the ssGSEA scrore 
+
 ## ssGSEA Scoring
+
+* If performing an analysis with gene sets, the ssGSEA score is determined for each gene sets within each gene set file provided
+  * This file is output with the project name, gene set name, and "ssGSEA_score.txt" as the suffix for the file name
+* This step is skipped if only analyzing raw gene expression
 
 ## Above and Below Median Calculation
 
+* If raw gene expression is being analyzed the median raw gene expression for each gene is determined and the samples are binned into a group of "above" or "below" median for each gene
+* For gene set analysis, each the median ssGSEA score for each gene set is determined and the samples are binned into a group of "above" or "below" median for each gene set
+* These files are output as project name, gene set name (or "Genes"), and "BIN.txt" as the suffix for each file name
+
 ## Cox Propotional Hazard Analysis
 
+* This step takes the longest to process
+* Each binned gene set or gene is ran through the Cox proportional hazard function with the chosen survival data to generate the hazard ratio, concordance index, and p.values for each gene set
+* If a covariate is included in the analysis, this variable will be taken into account in the CoxPH formula.
+* As this formula runs it will continuously write out a line in the output file which is labeled with project name, gene set name (or "Genes"), and "coxh.txt" as the suffix for each file name
+  * **Please DO NOT open this file while the script is running,** this will likely cause an error is R tries to write to a file that is currently open. 
+    * If you want to check the process it is recommended that you copy the file to another location and open to view it there
+
 ## Ranking
+
+* When the CoxPH formula is finished running though the gene sets or genes, the script with rank the table by the overall P.value
+* The first column will consist of the variable name which will be the gene set name or the gene depending on what was analyzed.
+* The adjusted P.values ("BH" method) of Likelihood Ratio, Wald Test, and Logrank Test will be calculated and included
+
+
 
 # Further Applications
 
