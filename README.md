@@ -42,8 +42,6 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 
 * **Expression Matrix (.tsv/.txt):**
   * Must be tab delimited with gene names as symbols located in the first column with subsequent columns consiting of the sample name as the header and expression data down the column.
-  *  The App expects lowly expressed genes filtered out and normalized data either to FPKM or TMM.
-     * Larger files might inflict memory issues for you local computer.
 
 * **Meta/Clincal Data (.tsv/.txt):**
   * This should be a tab delimited file with each row depicting a sample by the same name as in the expression matrix followed by informative columns containing survival data and other features to analyze the samples by.
@@ -53,9 +51,12 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 
 * **Gene Set File (.gmt/.txt/.tsv/.RData):**
   * This is the file that contains the gene set names and genes for each gene set.
-  * I provide example gene sets from publicly available sources here: https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/tree/main/Example_GeneSets
-    * These include the Molecular Signatures Database, LINCS L1000 small molecule perturbations, and ER Stress Signatures.
-  * An .RData list is the preferred format which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
+  * I provide example gene sets from publicly available sources here: https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/GeneSets
+    * These include the Molecular Signatures Database (MSigDB), LINCS L1000 small molecule perturbations, ER Stress Signatures, Immune Signatures, and Cell Markers.
+  * The scripts accepts different formats of gene sets
+    * .gmt format described [here](https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29)
+    * .txt/.tsv (two-column tab-delimited) with the first column being the gene set name repeating for every gene symbol that would be placed in the second column.
+    * .RData list which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
     * The app also accepts gene sets in .gmt format or two-column tab-delimited .tsv/.txt format with the first column being the gene set name repeating for every gene symbol that would be placed in the second column. If either of these three formats are given athe app with automatically convert them to an RData list.
     * If no Gene Set File is provided, the analysis can still run if tyhe user only plans to rank on a gene level
   * I have provided duiplicate gene sets in both RData and txt file types
