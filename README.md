@@ -149,11 +149,16 @@ Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
   * This data is the skin cancer subset from the PAN ICI iAtlas example data used in the [DRPPM-PATH-SURVEIOR R Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR)
 * [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params.txt)
   * This parameter file runs the example data with only the 50 MSigDB Hallmark gene sets provided in the [GeneSets](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/GeneSets) folder
+    * Output example for this run is shown [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files/PAN_ICI_iAtlas_OS_MSigDBHallmark_ExampleRun_Outputs)
+  * Example provided with covariate analysis [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_ResponderCovariate_Params.txt)
+    * Output example for this run is shown [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files/PAN_ICI_iAtlas_OS_MSigDBHallmark_ResponderCovariate_ExampleRun_Outputs)
 * [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params.txt)
   * This parameter file runs the 50 Hallmark Gene sets, as well as the raw gene expression analysis based on the genes in the expression data
+  * Example provided with covariate analysis [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_ResponderCovariate_Params.txt)
   * **This analysis will take an extended period of time**
 * [PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params.txt)
   * This parameter file runs all of the gene sets provided as listed in the [gene set .lst file](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/Example_GeneSets.lst) as well as the raw gene expression analysis
+  * Example provided with covariate analysis [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_ResponderCovariate_Params.txt)
   * **This analysis will take an extended period of time and is recommended to be ran on a command line prompt if available**
 
 ## Advanced Use Case
