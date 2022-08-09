@@ -8,6 +8,8 @@ Here we focus on the Pipeline mode of this workflow with the DRPPM-PATH-SURVEIOR
 
 The top pathways or genes that are idetntified through this pipeline can be displayed in real-time for validation through the use of the [DRPPM-PATH-SURVEIOR R Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR). Depending on the analysis performed the table may be further analysed through additional apps of the DRPPM-SURVEIOR family. When the analysis is run with pathways the output table can subset into top hits and be used as input in the [DRPPM-Jaccard-Pathway-Connectivity R Shiny App](https://github.com/shawlab-moffitt/DRPPM-Jaccard-Pathway-Connectivity). This app allows the user to visualize the connectivity and pathway clusters of top gene sets of interest. When the analysis is run analyzing raw gene expression, the output table of the pipeline can be subset by taking the gene symbol column and hazard ratio column and used as input for the [DRPPM-PreRanked-GSEA R Shiny App](https://github.com/shawlab-moffitt/DRPPM-PreRanked-GSEA) which uses the hazard ratio to rank the genes and generate an enriched signature table and enrichment plots based on that ranking.
 
+![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/FlowChart_PipelineMode.png?raw=true)
+
 
 # Installation
 
