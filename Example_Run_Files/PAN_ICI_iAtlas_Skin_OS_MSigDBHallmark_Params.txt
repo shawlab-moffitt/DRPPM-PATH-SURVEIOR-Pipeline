@@ -7,5 +7,5 @@ Output_File_Path
 Survival_Time_Label	OS.time
 Survival_ID_Label	OS
 Rank_Genes	FALSE
-Covariate_Column_Label	Responder
-Covariate_Reference	FALSE
+Covariate_Column_Label	
+Covariate_Reference	
