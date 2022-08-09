@@ -317,7 +317,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
   
   ## Put parameters and header together
   ProjName_Line <- paste("## Project Name:",Project_Name)
-  Survival_Line <- paste("## Survival/Event Type:",Survival_Time,"///",Survival_ID)
+  Survival_Line <- paste("## Survival/Event Variables:",Survival_Time,"///",Survival_ID)
   Samples_Line <- paste("## Number of Samples:",nrow(meta))
   expr_file <- paste("## Expression Matrix File Name:",basename(Expression_Matrix_file))
   meta_file <- paste("## Meta Data File Name:",basename(Meta_Data_File))
