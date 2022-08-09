@@ -197,14 +197,14 @@ Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
 ## Ranking
 
 * When the CoxPH formula is finished running though the gene sets or genes, the script with rank the table by the overall P.value
+* The table will be complete with paramater lines at the top which are preceeded by "##"
 * The first column will consist of the variable name which will be the gene set name or the gene depending on what was analyzed.
 * The adjusted P.values ("BH" method) of Likelihood Ratio, Wald Test, and Logrank Test will be calculated and included
 
 
-
 # Further Applications
 
-The comprehensive table that is output from the analysis will elucidate some of the top pathways or genes that contribute to high-risk patients. If the [DRPPM-PATH-SURVIOER Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER) was generated, these top pathways can be visualized within the app for validation. 
+The comprehensive table that is output from the analysis will elucidate some of the top pathways or genes that contribute to high-risk patients. If the [DRPPM-PATH-SURVIOER Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR) was generated, these top pathways can be visualized within the app for validation. 
 
 Additionally, to investigate the top pathways the user may take the top user specified number of pathways or a grouping of pathways the user wishes to explore further and input this list of pathways to the DRPPM-Jaccard-Pathway-Connectivity Shiny App and visualize the connectedness of the different pathways based on Jaccard Distance. The app set-up and function is explained in detail on the [GitHub page](https://github.com/shawlab-moffitt/DRPPM-Jaccard-Pathway-Connectivity).
 
