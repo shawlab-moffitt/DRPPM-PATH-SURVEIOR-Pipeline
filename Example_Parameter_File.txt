@@ -1,0 +1,11 @@
+Project_Name	Cancer_Survival_OS
+Expression_Matrix_file	~/Path/To/Expression_Matrix.txt
+Meta_Data_File	~/Path/To/Meta.txt
+Gene_Set_File	~/Path/To/MSigDB_Hallmark_GeneSets.txt
+Gene_Set_Name	MSigDB.Hallmark
+Output_File_Path	~/Path/To/Output/Folder/
+Survival_Time_Label	OS.time
+Survival_ID_Label	OS.ID
+Rank_Genes	TRUE
+Covariate_Column_Label	
+Covariate_Reference	
