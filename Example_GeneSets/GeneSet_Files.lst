@@ -1,4 +1,6 @@
-MSigDB	Example_GeneSets/MSigDB_HS_GeneSet.zip
-LINCS_DN	Example_GeneSets/LINCS_L1000_DN_GeneSet.zip
-LINCS_UP	Example_GeneSets/LINCS_L1000_UP_GeneSet.zip
-ERstress	Example_GeneSets/ERstress_GeneSet.txt
+MSigDB	Example_GeneSets/MSigDB/MSigDB_HS_GeneSet.zip
+LINCS_DN	Example_GeneSets/LINCS_L1000/LINCS_L1000_DN_GeneSet.zip
+LINCS_UP	Example_GeneSets/LINCS_L1000/LINCS_L1000_UP_GeneSet.zip
+ERstress	Example_GeneSets/ER_Stress/ERstress_GeneSet.txt
+ImmuneSig	Example_GeneSets/ImmuneSig/ImmuneSignatures.txt
+CellMarker	Example_GeneSets/CellMarker/CellMarker_gsNsym_HS_v2.txt
