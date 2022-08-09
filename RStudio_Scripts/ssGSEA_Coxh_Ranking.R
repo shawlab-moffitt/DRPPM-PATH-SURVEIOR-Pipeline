@@ -1,7 +1,5 @@
 ####----Command Line Arguments----####
 
-args=commandArgs(trailingOnly = T)
-
 Param_File <- "Path/To/Parameter/file.txt"
 
 ####----Packages----####
