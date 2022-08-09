@@ -51,18 +51,18 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 
 * **Gene Set File (.gmt/.txt/.tsv/.RData):**
   * This is the file that contains the gene set names and genes for each gene set.
+  * If running the analysis on a single gene set, please include a gene set name in the propper location of the parameter file described below.
   * I provide example gene sets from publicly available sources here: https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/GeneSets
     * These include the Molecular Signatures Database (MSigDB), LINCS L1000 small molecule perturbations, ER Stress Signatures, Immune Signatures, and Cell Markers.
   * The scripts accepts different formats of gene sets
-    * .gmt format described [here](https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29)
-    * .txt/.tsv (two-column tab-delimited) with the first column being the gene set name repeating for every gene symbol that would be placed in the second column.
-    * .RData list which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-SURVIVE/blob/main/GeneSet_Data/GeneSetRDataListGen.R)
-    * The app also accepts gene sets in .gmt format or two-column tab-delimited .tsv/.txt format with the first column being the gene set name repeating for every gene symbol that would be placed in the second column. If either of these three formats are given athe app with automatically convert them to an RData list.
-    * If no Gene Set File is provided, the analysis can still run if tyhe user only plans to rank on a gene level
-  * I have provided duiplicate gene sets in both RData and txt file types
+    * .gmt format ([example](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/MSigDB/MSigDB_Kegg_GeneSet.gmt)) described [here](https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29)
+    * .txt/.tsv (two-column tab-delimited) ([example](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/MSigDB/MSigDB_Hallmark_GeneSets.txt)) with the first column being the gene set name repeating for every gene symbol that would be placed in the second column.
+    * .RData list ([example readable with R](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/MSigDB/MSigDB_HS_GeneSet.RData)) which is a named list of gene sets and genes. A script to generate this list is provided here: [GeneSetRDataListGen.R](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/GeneSetRDataListGen.R)
+  * If the user chooses to run the analysis on the genes only, no gene set file is needed
     
 * **Gene Set .lst File (.lst) (OPTIONAL):**
   * In the case the user would like to run the pipeline with multiple gene set files, the user can provide a two column file containing the gene set name in the first column and the path to the gene set file in the second column.
+  * [Example here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/Example_GeneSets.lst)
   * The gene set files listed should follow the format described above.
     
 * **Parameter File (.txt/.tsv):**
@@ -73,18 +73,34 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 
 ## Parameter File
 
-* This file will contain all the necessary information for the pipeline to run.
-* Some parameters are optional.
-* Do not include a header in this file.
-* The order does not matter, but the parameter names do matter
-* The Survival Time and ID Label should be the column names of the respective survival data you want to analyze.
-  * For the simplified version only input one survival type. For example, only run through with OS data and your column names may be OS.time and OS.ID (make sure your column names match what you put in the parameter file.
-  * For advanced use (in the advanced folder), you may input a comma seperated list of survival time and ID labels, but you must have a time and ID column for each survival data type and they must be in the same order for both Time and ID.
-* The "Rank_Genes" parameter is an optional function that will run the analysis based on each gene in the expression data. This will produce a table of genes ranked by hazard ratio as well as the gene set(s) being run.
+* General Notes
+  * This file will contain all the necessary information for the pipeline to run.
+  * Some parameters are optional (Gene_Set_File,Gene_Set_Name,Covariate_Column_Label,Covariate_Reference).
+  * Do not include a header in this file.
+  * The order does not matter, but the parameter names do matter
+  * Blank example parameter file [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/BLANK_ParamFile.txt)
+  * Filled in example files [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files)
+* Project Name
+  * Please be descriptive and add the survival data type in the name (OS/EFS/PFI/ect)
+  * The script will add the gene set name, if given, to the output file
+* Gene Set File and Name
+  * This can be just a singular gene set file or a .lst file described [above](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline#required-files)
+  * If a singular file please include a gene set name, though not required
+* Output File Path
+  * If no output file path is given, current working directory will be used
+* Survival Data
+  * The Survival Time and ID Label should be the column names of the respective survival data you want to analyze.
+* Raw Gene Expression Analysis Option
+  * The "Rank_Genes" parameter is an optional function (if answered TRUE) that will run the analysis based on each gene in the expression data.
+  * This will produce a table of genes ranked by hazard ratio as well as the gene set(s) being run.
   * The user may choose to only rank genes and leave the Gene_Set_File parameter blank if they choose.
-  * This analysis may take an extended period of time.
-* The Covariate parameters allow the user to perform an interactive Coxh survival analysis between the pathway High/Low score and a specified categorical column from the meta/clinical data. The user input would be the column name of the covariate.
-  * If performing this analysis, it is requested the user provide a reference variable for the Coxh analysis, this would go in the "Covariate_Reference" parameter below. If this is not specified the function will use the first level from the factored covariate column.
+  * **This analysis may take an extended period of time**
+* Covariate Analysis
+  * The user may perform an interactive Coxh survival analysis between the pathway High/Low score and a specified categorical column from the meta data.
+  * The user input should be the column name of the covariate.
+  * If performing this analysis, it is requested the user provide a reference variable for the Coxh analysis, this would go in the "Covariate_Reference" parameter below.
+    * If this is not specified the function will use the first level from the factored covariate column.
+  * **This analysis may take an extended period of time** 
 
 | Parameter | User Input |
 | --- | --- |
@@ -94,42 +110,92 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 | Gene_Set_File | [~/Path/To/GeneSetFile.[txt/tsv/gmt/RData] or ~/Path/To/GeneSetFiles.lst] |
 | Gene_Set_Name | [Desired Name for gene set (optional)]
 | Output_File_Path | [~/Path/To/Output/Folder/] |
-| Survival_Time_Label | [OS.time/EFS.time/PFI.time/ect] |
-| Survival_ID_Label | [OS/EFS/PFI/ect] |
-| Rank_Genes | [TRUE/FALSE] |
+| Survival_Time_Label | [OS.time/EFS.time/PFI.time/ect (choose one)] |
+| Survival_ID_Label | [OS/EFS/PFI/ect (choose one)] |
+| Rank_Genes | [TRUE or FALSE] |
 | Covariate_Column_Label | [optional] |
 | Covariate_Reference | [optional] |
 
 ## Running the script
 
-Please keep in mind, depending on how large the gene set files are and if the user chooses to perform the individual gene analysis, this script can take multiple hours to run.
+**Please keep in mind, depending on how large the gene set files are and if the user chooses to perform the individual gene analysis, this script can take multiple hours to run.**
 
 ### R Studio
 
-* The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline/blob/main/ssGSEA_Coxh_Ranking_RStudio.R) of the script
-* it is recommended to run the script as a local job in R Studio.
-  * In the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the script wherever you saved it.
-* Or the user can select all of the contents and run the script
+* The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/RStudio_Scripts/ssGSEA_Coxh_Ranking.R) of the script
+* It is recommended to run the script as a local job in R Studio (See pictures below)
+  * On the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the edited script where you saved it.
+  * On the top right of the script section, selcting the dropdown from "Source" will also allow you to start a local job
+* The user can select all of the contents and run the script or run section by section
   * Running the script this way will keep the R studio session busy and you will be able to run anything else while the script is running.
 
+<p align="center">
+  <img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true"/>
+  <img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true"/>
+</p>
+
 ### Command Line
-* The user can run this script in a command line environment as long as the requirments are met in the environment you are using.
+* The user can run the [command line verison](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/CommandLine_Scripts/ssGSEA_Coxh_Ranking.R) of the script in a command line environment as long as the requirments are met in the environment you are using.
 * When the script and parameter file are in the desired directory run the command below:
 ```{linux}
-Rscript ssGSEA_Coxh_Ranking_CommandLine.R [parameter_file]
+Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
 ```
+
+## Pre-Set Example
+
+* Multiple example cases with their own parameter files are set up in the [Example_Run_Files](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files) folder.
+* The may be run by following the [Intallation Steps](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline#installation) and copying the path to the selected parameter file to be read by the script
+* The given example uses PAN ICI iAtlas checkpoint data from skin cancer patients. The expression and meta data is provided.
+  * This data is the skin cancer subset from the PAN ICI iAtlas example data used in the [DRPPM-PATH-SURVEIOR R Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR)
+* [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params.txt)
+  * This parameter file runs the example data with only the 50 MSigDB Hallmark gene sets provided in the [GeneSets](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/GeneSets) folder
+* [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params.txt)
+  * This parameter file runs the 50 Hallmark Gene sets, as well as the raw gene expression analysis based on the genes in the expression data
+  * **This analysis will take an extended period of time**
+* [PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params.txt)
+  * This parameter file runs all of the gene sets provided as listed in the [gene set .lst file](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/Example_GeneSets.lst) as well as the raw gene expression analysis
+  * **This analysis will take an extended period of time and is recommended to be ran on a command line prompt if available**
+
+## Advanced Use Case
+
+
 
 # Pipeline Steps and Output
 
 ## Prepping Data
 
+* The script is set up to install any packages that are not found. The user may pre-load these is they choose
+* The script begins by reading in the parameter file and files within the parameters file to set up the environment
+* If survival data or covariate data is missing from any samples they will be removed, as they could skew the median and binning of samples by the ssGSEA scrore 
+
 ## ssGSEA Scoring
+
+* If performing an analysis with gene sets, the ssGSEA score is determined for each gene sets within each gene set file provided
+  * This file is output with the project name, gene set name, and "ssGSEA_score.txt" as the suffix for the file name
+* This step is skipped if only analyzing raw gene expression
 
 ## Above and Below Median Calculation
 
+* If raw gene expression is being analyzed the median raw gene expression for each gene is determined and the samples are binned into a group of "above" or "below" median for each gene
+* For gene set analysis, each the median ssGSEA score for each gene set is determined and the samples are binned into a group of "above" or "below" median for each gene set
+* These files are output as project name, gene set name (or "Genes"), and "BIN.txt" as the suffix for each file name
+
 ## Cox Propotional Hazard Analysis
 
+* This step takes the longest to process
+* Each binned gene set or gene is ran through the Cox proportional hazard function with the chosen survival data to generate the hazard ratio, concordance index, and p.values for each gene set
+* If a covariate is included in the analysis, this variable will be taken into account in the CoxPH formula.
+* As this formula runs it will continuously write out a line in the output file which is labeled with project name, gene set name (or "Genes"), and "coxh.txt" as the suffix for each file name
+  * **Please DO NOT open this file while the script is running,** this will likely cause an error is R tries to write to a file that is currently open. 
+    * If you want to check the process it is recommended that you copy the file to another location and open to view it there
+
 ## Ranking
+
+* When the CoxPH formula is finished running though the gene sets or genes, the script with rank the table by the overall P.value
+* The first column will consist of the variable name which will be the gene set name or the gene depending on what was analyzed.
+* The adjusted P.values ("BH" method) of Likelihood Ratio, Wald Test, and Logrank Test will be calculated and included
+
+
 
 # Further Applications
 

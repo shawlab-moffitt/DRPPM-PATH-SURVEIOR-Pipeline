@@ -1,7 +1,5 @@
 ####----Command Line Arguments----####
 
-args=commandArgs(trailingOnly = T)
-
 Param_File <- "Path/To/Parameter/file.txt"
 
 ####----Packages----####
@@ -51,6 +49,12 @@ if (!exists("Gene_Set_Name")) {
 
 ## Output File Path
 Output_File_Path <- params[which(params[,1] == "Output_File_Path"),2]
+if (!exists("Output_File_Path")) {
+  Output_File_Path <- NA
+}
+if (is.na(Output_File_Path)) {
+  Output_File_Path <- getwd()
+}
 # Add a forward slash if missing from the end of path
 last_char <- str_sub(Output_File_Path,-1,-1)
 if (last_char != "/") {
