@@ -132,20 +132,31 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
   <img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true"/>
 </p>
 
-
-<img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG" align="center">
-
-<p align="center">
-![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true)
- </p>
- 
- ![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true)
 ### Command Line
 * The user can run the [command line verison](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/CommandLine_Scripts/ssGSEA_Coxh_Ranking.R) of the script in a command line environment as long as the requirments are met in the environment you are using.
 * When the script and parameter file are in the desired directory run the command below:
 ```{linux}
 Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
 ```
+
+## Pre-Set Example
+
+* Multiple example cases with their own parameter files are set up in the [Example_Run_Files](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files) folder.
+* The may be run by following the [Intallation Steps](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline#installation) and copying the path to the selected parameter file to be read by the script
+* The given example uses PAN ICI iAtlas checkpoint data from skin cancer patients. The expression and meta data is provided.
+  * This data is the skin cancer subset from the PAN ICI iAtlas example data used in the [DRPPM-PATH-SURVEIOR R Shiny App](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR)
+* [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params.txt)
+  * This parameter file runs the example data with only the 50 MSigDB Hallmark gene sets provided in the [GeneSets](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/GeneSets) folder
+* [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params.txt)
+  * This parameter file runs the 50 Hallmark Gene sets, as well as the raw gene expression analysis based on the genes in the expression data
+  * **This analysis will take an extended period of time**
+* [PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params.txt)
+  * This parameter file runs all of the gene sets provided as listed in the [gene set .lst file](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/Example_GeneSets.lst) as well as the raw gene expression analysis
+  * **This analysis will take an extended period of time and is recommended to be ran on a command line prompt if available**
+
+## Advanced Use Case
+
+* The user may use the 
 
 # Pipeline Steps and Output
 
