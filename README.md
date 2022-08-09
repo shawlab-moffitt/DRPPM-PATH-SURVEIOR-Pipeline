@@ -86,6 +86,8 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 * Gene Set File and Name
   * This can be just a singular gene set file or a .lst file described [above](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline#required-files)
   * If a singular file please include a gene set name, though not required
+* Output File Path
+  * If no output file path is given, current working directory will be used
 * Survival Data
   * The Survival Time and ID Label should be the column names of the respective survival data you want to analyze.
 * Raw Gene Expression Analysis Option
