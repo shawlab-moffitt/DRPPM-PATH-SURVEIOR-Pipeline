@@ -128,8 +128,8 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
   * Running the script this way will keep the R studio session busy and you will be able to run anything else while the script is running.
 
 <p align="center">
-  <![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true)/>
-  <![alt text](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true)/>
+  <img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob1.PNG?raw=true"/>
+  <img src="https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Workflow_Picture/RStudio_LocalJob2.PNG?raw=true"/>
 </p>
 
 
