@@ -123,9 +123,10 @@ git clone https://github.com/shawlab-moffitt/DRPPM-PATH-SURVIOER-Pipeline.git
 ### R Studio
 
 * The user can input the path to the parameter file at the top of the [RStudio version](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/RStudio_Scripts/ssGSEA_Coxh_Ranking.R) of the script
+  * The initial script is set up with the PAN ICI iAtlas Skin Cancer data with the MSigDB Hallmark gene set
 * It is recommended to run the script as a local job in R Studio (See pictures below)
-  * On the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the edited script where you saved it.
-  * On the top right of the script section, selcting the dropdown from "Source" will also allow you to start a local job
+  * On the bottom console of R Studio select the "Jobs" tab and select "Start a Local Job" then choose the edited script where you saved it and "DRPPM-PATH-SURVEIOR-Pipeline" as your working directory 
+  * On the top right of the script section, selcting the dropdown from "Source" will also allow you to start a local job, select the script file where is it located and "DRPPM-PATH-SURVEIOR-Pipeline" as your working directory 
 * The user can select all of the contents and run the script or run section by section
   * Running the script this way will keep the R studio session busy and you will be able to run anything else while the script is running.
 
