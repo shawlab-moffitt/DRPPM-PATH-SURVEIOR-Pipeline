@@ -154,8 +154,11 @@ Rscript ssGSEA_Coxh_Ranking.R [parameter_file]
     * Output example for this run is shown [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files/PAN_ICI_iAtlas_OS_MSigDBHallmark_ResponderCovariate_ExampleRun_Outputs)
 * [PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_Params.txt)
   * This parameter file runs the 50 Hallmark Gene sets, as well as the raw gene expression analysis based on the genes in the expression data
+  * Output example for this run is shown [here[(https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/tree/main/Example_Run_Files/PAN_ICI_iAtlas_OS_MSigDBHallmartk_withGenes_ExampleRun_Outputs)
+    * Please note that that [Pan_ICI_iAtlas_Skin_OS_Genes_BIN.zip](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_OS_MSigDBHallmartk_withGenes_ExampleRun_Outputs/Pan_ICI_iAtlas_Skin_OS_Genes_BIN.zip) file was zipped after the run to upload to GitHub due to its 100+mb size
   * Example provided with covariate analysis [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_withGenes_ResponderCovariate_Params.txt)
   * **This analysis will take an extended period of time**
+    * For reference, running this locally (non-covariate analysis) on an Intel i7 10610U machine with 16GB of memory took 15+ hours, performing covariate analysis could take almost double this time 
 * [PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_Params.txt)
   * This parameter file runs all of the gene sets provided as listed in the [gene set .lst file](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/GeneSets/Example_GeneSets.lst) as well as the raw gene expression analysis
   * Example provided with covariate analysis [here](https://github.com/shawlab-moffitt/DRPPM-PATH-SURVEIOR-Pipeline/blob/main/Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_GeneSetLst_withGenes_ResponderCovariate_Params.txt)
