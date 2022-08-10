@@ -1,6 +1,6 @@
 ####----Command Line Arguments----####
 
-Param_File <- "Path/To/Parameter/file.txt"
+Param_File <- "Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params.txt"
 
 ####----Packages----####
 
