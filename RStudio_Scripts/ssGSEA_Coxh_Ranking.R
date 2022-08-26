@@ -1,4 +1,4 @@
-####----Command Line Arguments----####
+####----File Input----####
 
 Param_File <- "Example_Run_Files/PAN_ICI_iAtlas_Skin_OS_MSigDBHallmark_Params.txt"
 
@@ -444,7 +444,7 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
           #adj.p <- p.adjust(as.numeric(c(lik_p,wal_p,sco_p)),method = "BH")
           temp_tab_df[3,c(1,2,13)] <- sub(".","",temp_tab_df[3,c(1,2,13)])
           temp_tab_vect <- as.character(c(temp_tab_df[3,]))
-          temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p,adj.p)
+          temp_tab_vect <- c(temp_tab_vect,con_v,lik_p,wal_p,sco_p)
           out_df <- rbind(out_df,temp_tab_vect)
           write(temp_tab_vect,file = file_made, append = T, sep = '\t', ncolumns = 32)
         }
@@ -494,6 +494,20 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     tab_df3_ordered <- rbind(out_df_top,new_header,tab_df3_ordered)
     new_file <- gsub(".txt","_ranked.txt",file_made)
     write_delim(tab_df3_ordered, new_file, delim = '\t', col_names = F, na = "")
+    
+    tab_df3_ordered_noHeader <- tab_df3_ordered[grep("##",out_df[,1],invert = T),]
+    colnames(tab_df3_ordered_noHeader) <- tab_df3_ordered_noHeader[1,]
+    tab_df3_ordered_noHeader <- tab_df3_ordered_noHeader[-1,]
+    tab_df3_sig <- tab_df3_ordered_noHeader[which(as.numeric(tab_df3_ordered_noHeader$p.value) <= 0.05 | is.na(as.numeric(tab_df3_ordered_noHeader$p.value))),]
+    tab_df3_sig_hr <- tab_df3_sig[which(as.numeric(tab_df3_sig$Hazard_Ratio) > 1),]
+    new_file_HR <- gsub("_ranked.txt","_ranked_sigHR.txt",new_file)
+    write_delim(tab_df3_sig_hr, new_file_HR, delim = '\t')
+    
+    ssgsea <- ssGSEA_tabs[[paste("ssgsea_",gs_name,sep = "")]]
+    ssgsea_hr <- ssgsea[,c("SampleName",tab_df3_sig_hr[,1])]
+    new_file_HR_ssgsea <- gsub("_coxh_ranked.txt","_ssgsea_score_sigHR.txt",new_file)
+    write_delim(ssgsea_hr, new_file_HR_ssgsea, delim = '\t')
+    
   }
   if (!is.na(Covariate_Column_Label)) {
     out_df2 <- as.data.frame(read_delim(file_made_int,delim = '\t', col_names = F))
@@ -634,6 +648,21 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     tab_df1_ordered <- rbind(out_df2_top,new_header,tab_df1_ordered)
     new_file_add <- gsub(".txt","_ranked.txt",file_made_add)
     write_delim(tab_df1_ordered, new_file_add, delim = '\t', col_names = F, na = "")
+    
+    tab_df1_ordered_noHeader <- tab_df1_ordered[grep("##",out_df2[,1],invert = T),]
+    colnames(tab_df1_ordered_noHeader) <- tab_df1_ordered_noHeader[1,]
+    tab_df1_ordered_noHeader <- tab_df1_ordered_noHeader[-1,]
+    tab_df1_sig <- tab_df1_ordered_noHeader[which(as.numeric(tab_df1_ordered_noHeader$p.value) <= 0.05 | is.na(as.numeric(tab_df1_ordered_noHeader$p.value))),]
+    tab_df1_sig_hr <- tab_df1_sig[which(as.numeric(tab_df1_sig$Hazard_Ratio) > 1),]
+    new_file_HR <- gsub("_ranked.txt","_ranked_sigHR.txt",new_file)
+    write_delim(tab_df1_sig_hr, new_file_HR, delim = '\t')
+    
+    ssgsea <- ssGSEA_tabs[[paste("ssgsea_",gs_name,sep = "")]]
+    ssgsea_hr <- ssgsea[,c("SampleName",tab_df1_sig_hr[,1])]
+    new_file_HR_ssgsea <- gsub("_coxh_ranked.txt","_ssgsea_score_sigHR.txt",new_file)
+    write_delim(ssgsea_hr, new_file_HR_ssgsea, delim = '\t')
+    
+    
     ## Interactive
     out_df3_top <- out_df3[grep("##",out_df3[,1]),]
     out_df3_top[,c(33:35)] <- NA
@@ -656,6 +685,20 @@ for (i in 1:length(ssGSEA_BIN_tabs)) {
     tab_df2_ordered <- rbind(out_df3_top,new_header,tab_df2_ordered)
     new_file_int <- gsub(".txt","_ranked.txt",file_made_int)
     write_delim(tab_df2_ordered, new_file_int, delim = '\t', col_names = F, na = "")
+    
+    tab_df2_ordered_noHeader <- tab_df2_ordered[grep("##",out_df2[,1],invert = T),]
+    colnames(tab_df2_ordered_noHeader) <- tab_df2_ordered_noHeader[1,]
+    tab_df2_ordered_noHeader <- tab_df2_ordered_noHeader[-1,]
+    tab_df2_sig <- tab_df2_ordered_noHeader[which(as.numeric(tab_df2_ordered_noHeader$p.value) <= 0.05 | is.na(as.numeric(tab_df2_ordered_noHeader$p.value))),]
+    tab_df2_sig_hr <- tab_df2_sig[which(as.numeric(tab_df2_sig$Hazard_Ratio) > 1),]
+    new_file_HR <- gsub("_ranked.txt","_ranked_sigHR.txt",new_file)
+    write_delim(tab_df2_sig_hr, new_file_HR, delim = '\t')
+    
+    ssgsea <- ssGSEA_tabs[[paste("ssgsea_",gs_name,sep = "")]]
+    ssgsea_hr <- ssgsea[,c("SampleName",tab_df2_sig_hr[,1])]
+    new_file_HR_ssgsea <- gsub("_coxh_ranked.txt","_ssgsea_score_sigHR.txt",new_file)
+    write_delim(ssgsea_hr, new_file_HR_ssgsea, delim = '\t')
+    
   }
 }
 
